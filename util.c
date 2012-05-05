@@ -42,7 +42,7 @@
 #endif
 #include <sys/param.h>
 #include <fcntl.h>
-#if HAVE_SYS_UIO_H
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
 #endif
 #ifdef SUNOS4
@@ -643,7 +643,7 @@ printstr(struct tcb *tcp, long addr, int len)
 	tprintf("%s", outstr);
 }
 
-#if HAVE_SYS_UIO_H
+#ifdef HAVE_SYS_UIO_H
 void
 dumpiov(tcp, len, addr)
 struct tcb * tcp;

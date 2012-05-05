@@ -33,7 +33,7 @@
 #include "defs.h"
 
 #include <fcntl.h>
-#if HAVE_SYS_UIO_H
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
 #endif
 
@@ -74,7 +74,7 @@ sys_write(struct tcb *tcp)
 	return 0;
 }
 
-#if HAVE_SYS_UIO_H
+#ifdef HAVE_SYS_UIO_H
 void
 tprint_iov(tcp, len, addr)
 struct tcb * tcp;
