@@ -18,9 +18,7 @@ LOCAL_PATH := $(call my-dir)
 
 ifneq ($(strip $(TARGET_ARCH)),mips)
 
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := \
+strace_SRC_FILES := \
     access.c \
     affinity.c \
     aio.c \
@@ -193,28 +191,28 @@ LOCAL_SRC_FILES := \
 
 # We have "config.h", but since we're using one file for both LP32 and LP64,
 # we need to set the hard-coded size #defines here instead.
-LOCAL_CFLAGS := -DHAVE_CONFIG_H
-LOCAL_CFLAGS_32 += -DSIZEOF_LONG_LONG=8 -DSIZEOF_LONG=4 -DSIZEOF_RLIM_T=4 -DHAVE_STRUCT_STAT64=1
-LOCAL_CFLAGS_64 += -DSIZEOF_LONG_LONG=8 -DSIZEOF_LONG=8 -DSIZEOF_RLIM_T=8
-LOCAL_CFLAGS += -DSIZEOF_KERNEL_LONG_T=SIZEOF_LONG -DSIZEOF_OFF_T=SIZEOF_LONG
+common_cflags := -DHAVE_CONFIG_H
+common_cflags_32 += -DSIZEOF_LONG_LONG=8 -DSIZEOF_LONG=4 -DSIZEOF_RLIM_T=4 -DHAVE_STRUCT_STAT64=1
+common_cflags_64 += -DSIZEOF_LONG_LONG=8 -DSIZEOF_LONG=8 -DSIZEOF_RLIM_T=8
+common_cflags += -DSIZEOF_KERNEL_LONG_T=SIZEOF_LONG -DSIZEOF_OFF_T=SIZEOF_LONG
 
-LOCAL_CFLAGS_arm += -DARM=1
-LOCAL_CFLAGS_arm += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
+common_cflags_arm += -DARM=1
+common_cflags_arm += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
 
-LOCAL_CFLAGS_arm64 += -DAARCH64=1
+common_cflags_arm64 += -DAARCH64=1
 
-LOCAL_CFLAGS_mips += -DMIPS=1 -DLINUX_MIPSO32=1
-LOCAL_CFLAGS_mips += -DHAVE_ASM_SYSMIPS_H=1
+common_cflags_mips += -DMIPS=1 -DLINUX_MIPSO32=1
+common_cflags_mips += -DHAVE_ASM_SYSMIPS_H=1
 
-LOCAL_CFLAGS_mips64 += -DMIPS=1 -DLINUX_MIPSN64=1
-LOCAL_CFLAGS_mips64 += -DHAVE_ASM_SYSMIPS_H=1
+common_cflags_mips64 += -DMIPS=1 -DLINUX_MIPSN64=1
+common_cflags_mips64 += -DHAVE_ASM_SYSMIPS_H=1
 
-LOCAL_CFLAGS_x86 += -DI386=1
-LOCAL_CFLAGS_x86 += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
+common_cflags_x86 += -DI386=1
+common_cflags_x86 += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
 
-LOCAL_CFLAGS_x86_64 += -DX86_64=1
+common_cflags_x86_64 += -DX86_64=1
 
-LOCAL_CFLAGS += \
+common_cflags += \
     -Wall \
     -Werror \
     -Wno-missing-field-initializers \
@@ -223,19 +221,58 @@ LOCAL_CFLAGS += \
     -Wno-sign-compare \
     -fno-strict-aliasing \
 
-LOCAL_C_INCLUDES_arm := $(LOCAL_PATH)/linux/arm $(LOCAL_PATH)/linux
-LOCAL_C_INCLUDES_arm64 := $(LOCAL_PATH)/linux/aarch64 $(LOCAL_PATH)/linux
-LOCAL_C_INCLUDES_mips := $(LOCAL_PATH)/linux/mips $(LOCAL_PATH)/linux
-LOCAL_C_INCLUDES_mips64 := $(LOCAL_PATH)/linux/mips $(LOCAL_PATH)/linux
-LOCAL_C_INCLUDES_x86 := $(LOCAL_PATH)/linux/i386 $(LOCAL_PATH)/linux
-LOCAL_C_INCLUDES_x86_64 := $(LOCAL_PATH)/linux/x86_64 $(LOCAL_PATH)/linux
+common_c_includes_arm := $(LOCAL_PATH)/linux/arm $(LOCAL_PATH)/linux
+common_c_includes_arm64 := $(LOCAL_PATH)/linux/aarch64 $(LOCAL_PATH)/linux
+common_c_includes_mips := $(LOCAL_PATH)/linux/mips $(LOCAL_PATH)/linux
+common_c_includes_mips64 := $(LOCAL_PATH)/linux/mips $(LOCAL_PATH)/linux
+common_c_includes_x86 := $(LOCAL_PATH)/linux/i386 $(LOCAL_PATH)/linux
+common_c_includes_x86_64 := $(LOCAL_PATH)/linux/x86_64 $(LOCAL_PATH)/linux
 
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(strace_SRC_FILES)
+LOCAL_CFLAGS := $(common_cflags)
+LOCAL_CFLAGS_32 := $(common_cflags_32)
+LOCAL_CFLAGS_64 := $(common_cflags_64)
+LOCAL_CFLAGS_arm := $(common_cflags_arm)
+LOCAL_CFLAGS_arm64 := $(common_cflags_arm64)
+LOCAL_CFLAGS_mips := $(common_cflags_mips)
+LOCAL_CFLAGS_x86 := $(common_cflags_x86)
+LOCAL_CFLAGS_x86_64 := $(common_cflags_x86_64)
+LOCAL_C_INCLUDES_arm := $(common_c_includes_arm)
+LOCAL_C_INCLUDES_arm64 := $(common_c_includes_arm64)
+LOCAL_C_INCLUDES_mips := $(common_c_includes_mips)
+LOCAL_C_INCLUDES_mips64 := $(common_c_includes_mips64)
+LOCAL_C_INCLUDES_x86 := $(common_c_includes_x86)
+LOCAL_C_INCLUDES_x86_64 := $(common_c_includes_x86_64)
 LOCAL_MODULE := strace
-
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
-
 LOCAL_MODULE_TAGS := debug
+include $(BUILD_EXECUTABLE)
 
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(strace_SRC_FILES)
+LOCAL_CFLAGS := $(common_cflags)
+LOCAL_CFLAGS_32 := $(common_cflags_32)
+LOCAL_CFLAGS_64 := $(common_cflags_64)
+LOCAL_CFLAGS_arm := $(common_cflags_arm)
+LOCAL_CFLAGS_arm64 := $(common_cflags_arm64)
+LOCAL_CFLAGS_mips := $(common_cflags_mips)
+LOCAL_CFLAGS_x86 := $(common_cflags_x86)
+LOCAL_CFLAGS_x86_64 := $(common_cflags_x86_64)
+LOCAL_C_INCLUDES_arm := $(common_c_includes_arm)
+LOCAL_C_INCLUDES_arm64 := $(common_c_includes_arm64)
+LOCAL_C_INCLUDES_mips := $(common_c_includes_mips)
+LOCAL_C_INCLUDES_mips64 := $(common_c_includes_mips64)
+LOCAL_C_INCLUDES_x86 := $(common_c_includes_x86)
+LOCAL_C_INCLUDES_x86_64 := $(common_c_includes_x86_64)
+LOCAL_STATIC_LIBRARIES := libc
+LOCAL_MODULE := strace_static
+LOCAL_MODULE_STEM := strace
+LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
+LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
+LOCAL_MODULE_TAGS := eng
+LOCAL_FORCE_STATIC_EXECUTABLE := true
 include $(BUILD_EXECUTABLE)
 
 endif
