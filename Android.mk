@@ -243,6 +243,9 @@ common_cflags_mips64 += -DHAVE_ASM_SYSMIPS_H=1
 common_cflags_x86 += -DI386=1
 common_cflags_x86 += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
 
+common_cflags_x86_64 += -DX86_64=1
+common_cflags_x86_64 += -DHAVE_STRUCT___OLD_KERNEL_STAT=1
+
 common_cflags += \
     -Wall \
     -Wwrite-strings \
